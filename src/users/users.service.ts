@@ -2,8 +2,9 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User, UserRole } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Role } from 'src/core/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -13,32 +14,46 @@ export class UsersService {
     ) { }
 
     async findOne(username: string): Promise<User | undefined> {
-        return this.usersRepository.findOne({ where: { username } });
+        const user = await this.usersRepository.findOne({ where: { username } });
+        return user || undefined;
     }
-
     async findById(id: number): Promise<User | undefined> {
-        return this.usersRepository.findOne({ where: { id } });
+        const user = await this.usersRepository.findOne({ where: { id } });
+        return user || undefined;
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         const { username, password } = createUserDto;
 
-        // Check if user already exists
         const existingUser = await this.findOne(username);
         if (existingUser) {
             throw new ConflictException('Username already exists');
         }
 
-        // Hash password
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const user = this.usersRepository.create({
             username,
             password: hashedPassword,
-            role: UserRole.USER, // Default role
+            role: Role.USER,
         });
 
+        return this.usersRepository.save(user);
+    }
+
+    async update(id: number, updateUserDto: Partial<CreateUserDto>): Promise<User> {
+        const user = await this.findById(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (updateUserDto.password) {
+            const saltRounds = 10;
+            updateUserDto.password = await bcrypt.hash(updateUserDto.password, saltRounds);
+        }
+
+        Object.assign(user, updateUserDto);
         return this.usersRepository.save(user);
     }
 
@@ -48,7 +63,7 @@ export class UsersService {
             throw new Error('User not found');
         }
 
-        user.role = UserRole.ADMIN;
+        user.role = Role.ADMIN;
         return this.usersRepository.save(user);
     }
 }

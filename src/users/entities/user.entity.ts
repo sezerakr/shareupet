@@ -1,11 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Pet } from '../../pets/entities/pet.entity';
-
-export enum UserRole {
-    USER = 'user',
-    MOD = 'moderator',
-    ADMIN = 'admin',
-}
+import { Role } from 'src/core/enums/role.enum';
 
 @Entity()
 export class User {
@@ -23,10 +18,10 @@ export class User {
 
     @Column({
         type: 'enum',
-        enum: UserRole,
-        default: UserRole.USER,
+        enum: Role,
+        default: Role.USER,
     })
-    role: UserRole;
+    role: Role;
 
     @OneToMany(() => Pet, pet => pet.creator)
     pets: Pet[];

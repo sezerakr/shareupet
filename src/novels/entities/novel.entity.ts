@@ -1,5 +1,5 @@
 import { UUID } from "crypto";
-import { Entity } from "src/core/entities/entity";
+import { Entity } from "src/core/entities/core.entity";
 
 export interface Novel extends Entity {
     author_id: UUID;

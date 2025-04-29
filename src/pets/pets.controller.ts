@@ -1,0 +1,43 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { PetsService } from './pets.service';
+import { CreatePetDto } from './dto/create-pet.dto';
+import { UpdatePetDto } from './dto/update-pet.dto';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
+@Controller('pets')
+export class PetsController {
+  constructor(private readonly petsService: PetsService) { }
+
+  @UseGuard(JwtAuthGuard)
+  @Post()
+  create(@Body() createPetDto: CreatePetDto) {
+    return this.petsService.create(createPetDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.petsService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.petsService.findOne(+id);
+  }
+
+  @UseGuard(LocalAuthGuard)
+  @Post()
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {
+    return this.petsService.update(+id, updatePetDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.petsService.remove(+id);
+  }
+}
+function UseGuard(LocalAuthGuard: typeof LocalAuthGuard): (target: PetsController, propertyKey: "create", descriptor: TypedPropertyDescriptor<(createPetDto: CreatePetDto) => string>) => void | TypedPropertyDescriptor<...> {
+  throw new Error('Function not implemented.');
+}
+

@@ -1,0 +1,31 @@
+import { Breed } from 'src/breeds/entities/breed.entity';
+import { CoreEntity } from 'src/core/entities/core.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+
+@Entity()
+export class Pet extends CoreEntity<number> {
+    @Column()
+    name: string;
+
+    @Column()
+    description: string;
+
+    @Column()
+    age: number;
+
+    @ManyToOne(() => Breed)
+    breed: Breed;
+
+    @Column()
+    color: string;
+
+    @Column({ nullable: true })
+    image: string;
+
+    @ManyToOne(() => User, user => user.pets)
+    creator: User;
+
+    @Column()
+    creatorId: number;
+}

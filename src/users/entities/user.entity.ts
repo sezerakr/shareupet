@@ -37,4 +37,6 @@ export class User {
 
     @OneToMany(() => Pet, pet => pet.creator)
     pets: Pet[];
+
+    fromSwagger: boolean;
 }

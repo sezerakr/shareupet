@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <title>Swagger UI: OAuth2 Redirect</title>
+</head>
+
+<body>
+    <script>
+        'use strict';
+
+        // Parse the URL
+        function parse() {
+            let params = {};
+            let hash = window.location.hash.substring(1);
+
+            // First try hash fragment
+            if (hash) {
+                hash.split('&').forEach(function (pair) {
+                    let parts = pair.split('=');
+                    params[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+                });
+            }
+
+            return params;
+        }
+
+        // Get the OAuth2 object from opener window
+        let oauth2 = window.opener.swaggerUIRedirectOauth2;
+        let params = parse();
+
+        if (!oauth2) {
+            console.error('Missing swaggerUIRedirectOauth2 in opener window');
+            window.close();
+            return;
+        }
+
+        // Pass the data to Swagger UI
+        if (params.access_token) {
+            oauth2.authorizationResponse = params;
+        } else {
+            oauth2.error = 'Authorization failed';
+        }
+        window.close();
+    </script>
+</body>
+
+</html>

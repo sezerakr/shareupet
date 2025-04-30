@@ -14,7 +14,8 @@ import { AppConfigService } from './config/app-config.service';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesPermissionsGuard } from './core/guards/roles-permissions.guard';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     AppConfigModule,
@@ -31,6 +32,9 @@ import { RolesPermissionsGuard } from './core/guards/roles-permissions.guard';
         synchronize: true,
       }),
       inject: [AppConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     AuthModule, UsersModule, PetsModule, BreedsModule],
   controllers: [AppController],

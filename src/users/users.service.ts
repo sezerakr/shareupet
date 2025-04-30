@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from 'src/core/enums/role.enum';
 import { ApiResponse } from 'src/core/interfaces/api-response.interface';
 import { GetUserDto } from './dto/get-user.dto';
+import { Permission } from 'src/core/enums/permission.enum';
 
 @Injectable()
 export class UsersService {
@@ -118,6 +119,7 @@ export class UsersService {
                 password: hashedPassword,
                 birthdate,
                 role: Role.USER,
+                permissions: this.getDefaultPermissions(Role.USER),
             });
 
             const savedUser = await this.usersRepository.save(user);
@@ -147,13 +149,15 @@ export class UsersService {
 
     async createFromGoogle(googleUser: any): Promise<ApiResponse<User>> {
         try {
+            const userRole = Role.USER;
             const user = this.usersRepository.create({
                 username: googleUser.username,
                 email: googleUser.email,
                 googleId: googleUser.googleId,
                 displayName: googleUser.displayName,
                 avatar: googleUser.avatar,
-                role: Role.USER,
+                role: userRole,
+                permissions: this.getDefaultPermissions(userRole),
             });
 
             const savedUser = await this.usersRepository.save(user);
@@ -241,4 +245,27 @@ export class UsersService {
             };
         }
     }
+
+    private getDefaultPermissions(role: Role): Permission[] {
+        switch (role) {
+            case Role.ADMIN:
+                return Object.values(Permission);
+            case Role.MOD:
+                return [
+                    Permission.CreatePets,
+                    Permission.CreateComments,
+                    Permission.ListPets,
+                    Permission.ListComments,
+                    Permission.DeletePets,
+                    Permission.DeleteComments,
+                    Permission.EditPets,
+                    Permission.EditComments,
+                    Permission.DeleteComments
+                ];
+            case Role.USER:
+            default:
+                return [Permission.CreatePets, Permission.CreateComments];
+        }
+    }
+
 }

@@ -85,7 +85,8 @@ export class AuthService {
             sub: user.id || user.userId,
             role: user.role,
             displayName: user.displayName || null,
-            avatar: user.avatar || null
+            avatar: user.avatar || null,
+            permissions: user.permissions || []
         };
 
         return {

@@ -35,6 +35,9 @@ export class User {
     @Column({ nullable: true })
     avatar: string;
 
+    @Column({ type: 'simple-array', nullable: true })
+    permissions: string[];
+
     @OneToMany(() => Pet, pet => pet.creator)
     pets: Pet[];
 

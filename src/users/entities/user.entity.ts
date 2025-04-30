@@ -13,7 +13,7 @@ export class User {
     @Column({ unique: true })
     email: string;
 
-    @Column()
+    @Column({ nullable: true })
     password: string;
 
     @Column({
@@ -22,6 +22,18 @@ export class User {
         default: Role.USER,
     })
     role: Role;
+
+    @Column({ nullable: true, type: 'date' })
+    birthdate: Date;
+
+    @Column({ nullable: true })
+    googleId: string;
+
+    @Column({ nullable: true })
+    displayName: string;
+
+    @Column({ nullable: true })
+    avatar: string;
 
     @OneToMany(() => Pet, pet => pet.creator)
     pets: Pet[];

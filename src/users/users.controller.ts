@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Patch, Param, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Patch, Param, HttpStatus, HttpException, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,7 +20,6 @@ export class UsersController {
     @Public()
     @Post('register')
     async register(@Body() createUserDto: CreateUserDto): Promise<ApiResponse<GetUserDto>> {
-        console.log('Registering user:', createUserDto);
         const response = await this.usersService.create(createUserDto);
         if (!response.success) {
             throw new HttpException(response.error, HttpStatus.BAD_REQUEST);
@@ -29,9 +28,32 @@ export class UsersController {
     }
 
     @Patch(':id')
-    @Roles(Role.ADMIN)
-    @Permissions(Permission.ManageUsers)
-    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<ApiResponse<User>> {
+    async update(
+        @Param('id') id: string,
+        @Body() updateUserDto: UpdateUserDto,
+        @Req() req
+    ): Promise<ApiResponse<User>> {
+        const currentUser = req.user;
+        const isAdmin = currentUser.role === Role.ADMIN;
+        const hasEditPermission = currentUser.permissions && currentUser.permissions.includes(Permission.EditUsers);
+        const isUpdatingOwnAccount = currentUser.userId === +id;
+
+        if (!isAdmin && !hasEditPermission && !isUpdatingOwnAccount) {
+            throw new HttpException('Unauthorized', HttpStatus.FORBIDDEN);
+        }
+
+        if (isUpdatingOwnAccount && !isAdmin && !hasEditPermission) {
+            const allowedFields = ['username', 'displayName', 'password', 'avatar', 'birthdate'];
+            const filteredUpdateDto = Object.keys(updateUserDto)
+                .filter(key => allowedFields.includes(key))
+                .reduce((obj, key) => {
+                    obj[key] = updateUserDto[key];
+                    return obj;
+                }, {});
+
+            updateUserDto = filteredUpdateDto as UpdateUserDto;
+        }
+
         const response = await this.usersService.update(+id, updateUserDto);
         if (!response.success) {
             throw new HttpException(response.error, HttpStatus.BAD_REQUEST);

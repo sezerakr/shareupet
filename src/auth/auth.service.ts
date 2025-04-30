@@ -93,4 +93,8 @@ export class AuthService {
             access_token: this.jwtService.sign(payload),
         };
     }
+
+    decodeToken(token: string) {
+        return this.jwtService.decode(token);
+    }
 }

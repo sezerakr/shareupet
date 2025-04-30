@@ -130,7 +130,6 @@ export class UsersService {
             returnedUser.displayName = savedUser.displayName;
             returnedUser.avatar = savedUser.avatar;
             returnedUser.birthdate = savedUser.birthdate;
-            console.log('User created:', returnedUser);
             return {
                 success: true,
                 data: returnedUser,

@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { BreedsService } from './breeds.service';
 import { CreateBreedDto } from './dto/create-breed.dto';
-import { UpdateBreedDto } from './dto/update-breed.dto';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PaginationDto } from 'src/core/dto/pagination.dto';
+import { Public } from 'src/auth/route.public';
+import { PetType } from 'src/core/enums/pettype.enum';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UserPermissions } from 'src/core/enums/userpermissions.enum';
+import { Role } from 'src/core/enums/role.enum';
+import { UsersService } from 'src/users/users.service';
 
+@ApiTags('breeds')
 @Controller('breeds')
 export class BreedsController {
-  constructor(private readonly breedsService: BreedsService) {}
+  constructor(
+    private readonly breedsService: BreedsService,
+    private readonly usersService: UsersService
+  ) { }
 
+  @ApiOperation({ summary: 'Create a new breed' })
+  @ApiResponse({ status: 201, description: 'breed successfully created' })
+  @ApiBody({ type: CreateBreedDto })
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createBreedDto: CreateBreedDto) {
+  create(@Body() createBreedDto: CreateBreedDto, @Req() req) {
+    const currentUser = req.user;
+    const userPermissions = currentUser.permissions || this.usersService.getDefaultPermissions(currentUser.role);
+    const isAdmin = currentUser.role === Role.ADMIN;
+
+    if (!isAdmin && !userPermissions.includes(UserPermissions.CreateBreeds)) {
+      throw new HttpException('Unauthorized - Insufficient permissions', HttpStatus.FORBIDDEN);
+    }
+
     return this.breedsService.create(createBreedDto);
   }
 
+  @Public()
+  @ApiOperation({ summary: 'Get all breeds' })
+  @ApiQuery({ name: 'petType', required: false, enum: PetType })
   @Get()
-  findAll() {
-    return this.breedsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.breedsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBreedDto: UpdateBreedDto) {
-    return this.breedsService.update(+id, updateBreedDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.breedsService.remove(+id);
+  findAll(@Query() paginationDto: PaginationDto, @Query('petType') petType?: PetType) {
+    if (petType) {
+      return this.breedsService.findByPetType(petType, paginationDto);
+    }
+    return this.breedsService.findAll(paginationDto);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '../enums/role.enum';
-import { Permission } from '../enums/permission.enum';
+import { UserPermissions } from 'src/core/enums/userpermissions.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { PERMISSIONS_KEY } from '../decorators/permissions.decorator';
 
@@ -15,7 +15,7 @@ export class RolesPermissionsGuard implements CanActivate {
             context.getClass(),
         ]);
 
-        const requiredPermissions = this.reflector.getAllAndOverride<Permission[]>(PERMISSIONS_KEY, [
+        const requiredPermissions = this.reflector.getAllAndOverride<UserPermissions[]>(PERMISSIONS_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
@@ -27,7 +27,7 @@ export class RolesPermissionsGuard implements CanActivate {
         const { user } = context.switchToHttp().getRequest();
 
         const userRoles: Role[] = user.roles || [];
-        const userPermissions: Permission[] = user.permissions || [];
+        const userPermissions: UserPermissions[] = user.permissions || [];
 
         let hasRequiredRoles = true;
         if (requiredRoles) {

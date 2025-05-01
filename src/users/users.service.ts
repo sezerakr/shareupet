@@ -7,7 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from 'src/core/enums/role.enum';
 import { ApiResponse } from 'src/core/interfaces/api-response.interface';
 import { GetUserDto } from './dto/get-user.dto';
-import { Permission } from 'src/core/enums/permission.enum';
+import { UserPermissions } from 'src/core/enums/userpermissions.enum';
 
 @Injectable()
 export class UsersService {
@@ -245,25 +245,25 @@ export class UsersService {
         }
     }
 
-    private getDefaultPermissions(role: Role): Permission[] {
+    public getDefaultPermissions(role: Role): UserPermissions[] {
         switch (role) {
             case Role.ADMIN:
-                return Object.values(Permission);
+                return Object.values(UserPermissions);
             case Role.MOD:
                 return [
-                    Permission.CreatePets,
-                    Permission.CreateComments,
-                    Permission.ListPets,
-                    Permission.ListComments,
-                    Permission.DeletePets,
-                    Permission.DeleteComments,
-                    Permission.EditPets,
-                    Permission.EditComments,
-                    Permission.DeleteComments
+                    UserPermissions.CreatePets,
+                    UserPermissions.CreateComments,
+                    UserPermissions.ListPets,
+                    UserPermissions.ListComments,
+                    UserPermissions.DeletePets,
+                    UserPermissions.DeleteComments,
+                    UserPermissions.EditPets,
+                    UserPermissions.EditComments,
+                    UserPermissions.DeleteComments
                 ];
             case Role.USER:
             default:
-                return [Permission.CreatePets, Permission.CreateComments];
+                return [UserPermissions.CreatePets, UserPermissions.CreateComments];
         }
     }
 

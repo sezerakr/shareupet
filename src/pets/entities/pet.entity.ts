@@ -2,6 +2,7 @@ import { Breed } from 'src/breeds/entities/breed.entity';
 import { CoreEntity } from 'src/core/entities/core.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { PetType } from '../../core/enums/pettype.enum';
 
 @Entity()
 export class Pet extends CoreEntity<number> {
@@ -13,6 +14,13 @@ export class Pet extends CoreEntity<number> {
 
     @Column()
     age: number;
+
+    @Column({
+        type: 'enum',
+        enum: PetType,
+        default: PetType.OTHER
+    })
+    type: PetType;
 
     @ManyToOne(() => Breed)
     breed: Breed;

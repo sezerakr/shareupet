@@ -1,4 +1,4 @@
-export enum Permission {
+export enum UserPermissions {
     CreatePets = 'create_pets',
     EditPets = 'edit_pets',
     DeletePets = 'delete_pets',

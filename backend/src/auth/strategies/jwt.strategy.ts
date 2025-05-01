@@ -17,14 +17,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
                     console.log('Checking for token in:', {
                         headers: request.headers?.authorization ? 'Authorization header exists' : 'No auth header',
                         query: request.query?.token ? 'Query token exists' : 'No query token',
-                        cookies: request.cookies?.token ? 'Cookie token exists' : 'No cookie token'
+                        cookies: request.cookies?.auth_token ? 'Cookie token exists' : 'No cookie token'
                     });
 
                     // Try to extract from various sources
                     const token =
                         (request.headers.authorization && request.headers.authorization.split(' ')[1]) ||
                         request.query.token ||
-                        request.cookies?.token;
+                        request.cookies?.auth_token;
 
                     if (token) console.log('Token found from custom extractor');
                     return token;

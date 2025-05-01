@@ -62,6 +62,14 @@ export class AppController {
 
     const isSwagger = !!req.query.state || req.query.swagger === 'true';
 
+    res.cookie('auth_token', token.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Only use secure in production
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      path: '/',
+      sameSite: 'lax'
+    });
+
     if (isSwagger) {
       const redirectUrl = `/api/oauth2-redirect.html#` +
         `access_token=${encodeURIComponent(token.access_token)}` +

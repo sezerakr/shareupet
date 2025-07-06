@@ -26,4 +26,4 @@ import { AppConfigModule } from 'src/config/config.module';
   providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

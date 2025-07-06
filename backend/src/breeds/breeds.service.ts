@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateBreedDto } from './dto/create-breed.dto';
-import { UpdateBreedDto } from './dto/update-breed.dto';
 import { Breed } from './entities/breed.entity';
 import { ApiResponse } from 'src/core/interfaces/api-response.interface';
 import { PaginationDto } from 'src/core/dto/pagination.dto';
@@ -13,7 +12,7 @@ export class BreedsService {
   constructor(
     @InjectRepository(Breed)
     private breedsRepository: Repository<Breed>,
-  ) { }
+  ) {}
 
   async create(createBreedDto: CreateBreedDto): Promise<ApiResponse<Breed>> {
     try {
@@ -21,26 +20,30 @@ export class BreedsService {
       const savedBreed = await this.breedsRepository.save(breed);
       return {
         success: true,
-        data: savedBreed
+        data: savedBreed,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to create breed',
           code: 'CREATE_BREED_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }
 
-  async findAll(paginationDto: PaginationDto, petType?: PetType): Promise<ApiResponse<Breed[]>> {
+  async findAll(
+    paginationDto: PaginationDto,
+    petType?: PetType,
+  ): Promise<ApiResponse<Breed[]>> {
     try {
       const { page = 1, limit = 100, search } = paginationDto;
       const skip = (page - 1) * limit;
 
-      const queryBuilder = this.breedsRepository.createQueryBuilder('breed')
+      const queryBuilder = this.breedsRepository
+        .createQueryBuilder('breed')
         .skip(skip)
         .take(limit);
 
@@ -53,7 +56,7 @@ export class BreedsService {
       if (search) {
         queryBuilder.andWhere(
           '(breed.name ILIKE :search OR breed.description ILIKE :search)',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
 
@@ -67,23 +70,25 @@ export class BreedsService {
           total,
           page,
           limit,
-          totalPages
-        }
+          totalPages,
+        },
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to retrieve breeds',
           code: 'FIND_BREEDS_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }
 
-  async findByPetType(petType: PetType, paginationDto: PaginationDto): Promise<ApiResponse<Breed[]>> {
+  async findByPetType(
+    petType: PetType,
+    paginationDto: PaginationDto,
+  ): Promise<ApiResponse<Breed[]>> {
     return this.findAll(paginationDto, petType);
   }
-
 }

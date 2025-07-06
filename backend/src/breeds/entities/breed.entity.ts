@@ -1,25 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Pet } from '../../pets/entities/pet.entity';
 import { PetType } from 'src/core/enums/pettype.enum';
+import { CoreEntity } from 'src/core/entities/core.entity';
 
 @Entity()
-export class Breed {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Breed extends CoreEntity<number> {
+  @Column({ unique: true })
+  name: string;
 
-    @Column({ unique: true })
-    name: string;
+  @Column({ nullable: true })
+  description: string;
 
-    @Column({ nullable: true })
-    description: string;
+  @Column({
+    type: 'enum',
+    enum: PetType,
+    default: PetType.OTHER,
+  })
+  petType: PetType;
 
-    @Column({
-        type: 'enum',
-        enum: PetType,
-        default: PetType.OTHER
-    })
-    petType: PetType;
-
-    @OneToMany(() => Pet, pet => pet.breed)
-    pets: Pet[];
+  @OneToMany(() => Pet, (pet) => pet.breed)
+  pets: Pet[];
 }

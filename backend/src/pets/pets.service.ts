@@ -12,8 +12,11 @@ export class PetsService {
   constructor(
     @InjectRepository(Pet)
     private petsRepository: Repository<Pet>,
-  ) { }
-  async create(createPetDto: CreatePetDto, userId: number): Promise<ApiResponse<Pet>> {
+  ) {}
+  async create(
+    createPetDto: CreatePetDto,
+    userId: number,
+  ): Promise<ApiResponse<Pet>> {
     try {
       const { breedId, ...petData } = createPetDto;
       if (!breedId) {
@@ -21,43 +24,43 @@ export class PetsService {
           success: false,
           error: {
             message: 'Breed ID is required',
-            code: 'BREED_REQUIRED'
-          }
+            code: 'BREED_REQUIRED',
+          },
         };
       }
 
       const newPet = this.petsRepository.create({
         ...petData,
         breed: { id: breedId },
-        creatorId: userId
+        creatorId: userId,
       });
 
       const savedPet = await this.petsRepository.save(newPet);
       const petWithRelations = await this.petsRepository.findOne({
         where: { id: savedPet.id },
-        relations: ['breed']
+        relations: ['breed'],
       });
       if (!petWithRelations) {
         return {
           success: false,
           error: {
             message: 'Failed to retrieve saved pet',
-            code: 'RETRIEVE_PET_ERROR'
-          }
+            code: 'RETRIEVE_PET_ERROR',
+          },
         };
       }
       return {
         success: true,
-        data: petWithRelations
+        data: petWithRelations,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to create pet',
           code: 'CREATE_PET_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }
@@ -67,7 +70,8 @@ export class PetsService {
       const { page = 1, limit = 10, search } = paginationDto;
       const skip = (page - 1) * limit;
 
-      const queryBuilder = this.petsRepository.createQueryBuilder('pet')
+      const queryBuilder = this.petsRepository
+        .createQueryBuilder('pet')
         .leftJoinAndSelect('pet.breed', 'breed')
         .orderBy('pet.id', 'DESC')
         .skip(skip)
@@ -76,7 +80,7 @@ export class PetsService {
       if (search) {
         queryBuilder.andWhere(
           '(pet.name ILIKE :search OR pet.description ILIKE :search)',
-          { search: `%${search}%` }
+          { search: `%${search}%` },
         );
       }
 
@@ -90,17 +94,17 @@ export class PetsService {
           total,
           page,
           limit,
-          totalPages
-        }
+          totalPages,
+        },
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to retrieve pets',
           code: 'FIND_PETS_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }
@@ -109,7 +113,7 @@ export class PetsService {
     try {
       const pet = await this.petsRepository.findOne({
         where: { id },
-        relations: ['breed']
+        relations: ['breed'],
       });
 
       if (!pet) {
@@ -117,31 +121,35 @@ export class PetsService {
           success: false,
           error: {
             message: `Pet with ID ${id} not found`,
-            code: 'PET_NOT_FOUND'
-          }
+            code: 'PET_NOT_FOUND',
+          },
         };
       }
 
       return {
         success: true,
-        data: pet
+        data: pet,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to retrieve pet',
           code: 'FIND_PET_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }
 
-  async update(id: number, updatePetDto: UpdatePetDto, userId?: number): Promise<ApiResponse<Pet>> {
+  async update(
+    id: number,
+    updatePetDto: UpdatePetDto,
+    userId?: number,
+  ): Promise<ApiResponse<Pet>> {
     try {
       const pet = await this.petsRepository.findOne({
-        where: { id }
+        where: { id },
       });
 
       if (!pet) {
@@ -149,36 +157,39 @@ export class PetsService {
           success: false,
           error: {
             message: `Pet with ID ${id} not found`,
-            code: 'PET_NOT_FOUND'
-          }
+            code: 'PET_NOT_FOUND',
+          },
         };
       }
 
       const updatedPet = await this.petsRepository.save({
         ...pet,
-        ...updatePetDto
+        ...updatePetDto,
       });
 
       return {
         success: true,
-        data: updatedPet
+        data: updatedPet,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to update pet',
           code: 'UPDATE_PET_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }
 
-  async remove(id: number, userId?: number): Promise<ApiResponse<{ deleted: boolean }>> {
+  async remove(
+    id: number,
+    userId?: number,
+  ): Promise<ApiResponse<{ deleted: boolean }>> {
     try {
       const pet = await this.petsRepository.findOne({
-        where: { id }
+        where: { id },
       });
 
       if (!pet) {
@@ -186,8 +197,8 @@ export class PetsService {
           success: false,
           error: {
             message: `Pet with ID ${id} not found`,
-            code: 'PET_NOT_FOUND'
-          }
+            code: 'PET_NOT_FOUND',
+          },
         };
       }
 
@@ -195,16 +206,16 @@ export class PetsService {
 
       return {
         success: true,
-        data: { deleted: true }
+        data: { deleted: true },
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: {
           message: 'Failed to delete pet',
           code: 'DELETE_PET_ERROR',
-          details: error.message
-        }
+          details: error.message,
+        },
       };
     }
   }

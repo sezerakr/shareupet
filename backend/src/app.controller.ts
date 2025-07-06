@@ -1,17 +1,18 @@
 import { Controller, Get, Post, UseGuards, Body, Res, Req } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { GoogleAuthGuard } from './auth/google-auth.guard';
 import { AuthService } from './auth/auth.service';
-import { ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags, ApiOAuth2, ApiExcludeEndpoint, ApiSecurity, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiOAuth2, ApiExcludeEndpoint, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from './auth/dto/login.dto';
 import { Public } from './auth/route.public';
+import { RequestUser } from '../common/interfaces/request-user.interface';
 
 @ApiTags('auth')
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   @Public()
   @ApiOperation({ summary: 'User authentication with username/password' })
@@ -27,13 +28,13 @@ export class AppController {
           example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         },
       },
-    }
+    },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized - Invalid credentials' })
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Req() req, @Body() loginDto: LoginDto) {
-    const result = await this.authService.login(req.user);
+  async login(@Req() req: Request) {
+    const result = await this.authService.login(req.user as RequestUser);
     return result;
   }
 
@@ -49,7 +50,7 @@ export class AppController {
   })
   @Get('auth/google')
   @UseGuards(GoogleAuthGuard)
-  async googleAuth() {
+  googleAuth() {
     // Passport takes care of the redirect
   }
 
@@ -57,8 +58,8 @@ export class AppController {
   @ApiExcludeEndpoint()
   @Get('auth/google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthCallback(@Req() req, @Res() res: Response) {
-    const token = await this.authService.login(req.user);
+  async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
+    const token = await this.authService.login(req.user as RequestUser);
 
     const isSwagger = !!req.query.state || req.query.swagger === 'true';
 
@@ -75,7 +76,7 @@ export class AppController {
         `access_token=${encodeURIComponent(token.access_token)}` +
         `&token_type=Bearer` +
         `&expires_in=86400` +
-        (req.query.state ? `&state=${encodeURIComponent(req.query.state)}` : '');
+        (req.query.state ? `&state=${encodeURIComponent(req.query.state as string)}` : '');
 
       return res.redirect(redirectUrl);
     } else {
@@ -87,9 +88,8 @@ export class AppController {
   @ApiResponse({ status: 200, description: 'Return authenticated user information' })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  async getProfile(@Req() req) {
-    const user = req.user;
+  getProfile(@Req() req: Request) {
+    const user = req.user as RequestUser;
 
     if (!user) {
       return {

@@ -9,6 +9,6 @@ import { UsersModule } from 'src/users/users.module';
   imports: [TypeOrmModule.forFeature([Breed]), UsersModule],
   controllers: [BreedsController],
   providers: [BreedsService],
-  exports: [BreedsService]
+  exports: [BreedsService],
 })
-export class BreedsModule { }
+export class BreedsModule {}

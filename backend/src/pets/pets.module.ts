@@ -7,10 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Pet } from './entities/pet.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Pet])
-  ],
+  imports: [TypeOrmModule.forFeature([Pet])],
   controllers: [PetsController],
-  providers: [PetsService, { provide: APP_GUARD, useClass: JwtAuthGuard, }],
+  providers: [PetsService, { provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
-export class PetsModule { }
+export class PetsModule {}

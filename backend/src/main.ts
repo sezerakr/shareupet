@@ -11,10 +11,12 @@ async function bootstrap() {
 
   // app.enableCors();
 
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   app.useGlobalFilters(new AuthExceptionFilter());
 
@@ -32,7 +34,7 @@ async function bootstrap() {
         bearerFormat: 'JWT', // Optional, but good practice
         name: 'Authorization',
         description: 'Enter JWT token',
-        in: 'header'
+        in: 'header',
       },
       'access-token',
     )
@@ -44,29 +46,31 @@ async function bootstrap() {
           implicit: {
             // Ensure this URL is correct for your Google OAuth initiation route
             authorizationUrl: '/auth/google?swagger=true',
-            scopes: { 'email': 'Email access', 'profile': 'Profile access' }
-          }
-        }
+            scopes: { email: 'Email access', profile: 'Profile access' },
+          },
+        },
       },
-      'oauth2' // This is the unique name for this scheme, used in @ApiSecurity()
+      'oauth2', // This is the unique name for this scheme, used in @ApiSecurity()
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
   const securedOperations = Object.values(document.paths)
-    .flatMap(path => Object.values(path))
-    .filter(operation => operation && typeof operation === 'object' && !operation.security); // Added null/type check
+    .flatMap((path) => Object.values(path))
+    .filter(
+      (operation: any) =>
+        operation && typeof operation === 'object' && !operation.security,
+    ); // Added null/type check
 
-  securedOperations.forEach(operation => {
+  securedOperations.forEach((operation: any) => {
     operation.security = [{ oauth2: ['email', 'profile'] }];
   });
-
 
   SwaggerModule.setup('api', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
-      oauth2RedirectUrl: `${process.env.SERVER_URL || 'http://localhost:3000'}/api/oauth2-redirect.html`,
+      oauth2RedirectUrl: `${configService.isProduction ? 'https://your-production-domain.com' : 'http://localhost:3000'}/api/oauth2-redirect.html`,
       oauth: {
         clientId: configService.google.clientID, // Assuming you have a Google clientID in your config
         appName: 'Share Your Pets API',
@@ -74,8 +78,8 @@ async function bootstrap() {
         useBasicAuthenticationWithAccessCodeGrant: false, // Usually false for implicit/auth code flow
         usePkceWithAuthorizationCodeGrant: false, // Set to true if you are using PKCE
         additionalQueryStringParams: {
-          swagger: 'true' // Custom param if needed by your auth route
-        }
+          swagger: 'true', // Custom param if needed by your auth route
+        },
       },
     },
   });

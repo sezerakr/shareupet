@@ -1,15 +1,25 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorService {
-  constructor() {}
+  constructor(private snackBar: MatSnackBar) {}
 
   showError(message: string): void {
-    // In a real application, you would display this message to the user
-    // using a toast notification, a dialog, or by updating a shared state.
     console.error('Frontend Error:', message);
-    alert(`Error: ${message}`); // For demonstration purposes
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar'], // Optional: for custom styling
+    });
+  }
+
+  showInfo(message: string): void {
+    console.log('Frontend Info:', message);
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: ['info-snackbar'], // Optional: for custom styling
+    });
   }
 }

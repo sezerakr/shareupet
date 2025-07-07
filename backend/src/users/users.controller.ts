@@ -28,17 +28,7 @@ import { Request } from 'express';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
-  @Post('register')
-  async register(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<ApiResponse<GetUserDto>> {
-    const response = await this.usersService.create(createUserDto);
-    if (!response.success) {
-      throw new HttpException(response.error, HttpStatus.BAD_REQUEST);
-    }
-    return response;
-  }
+  
 
   @UseGuards(RolesPermissionsGuard)
   @Roles(Role.ADMIN)

@@ -21,19 +21,20 @@ export class AuthService {
   ) { }
 
   async validateUser(
-    username: string,
+    email: string,
     pass: string,
-  ): Promise<User | 'USER_NOT_FOUND' | 'INVALID_PASSWORD'> {
-    const user = await this.usersService.findOne(username);
+  ): Promise<Omit<User, 'password'> | null> {
+    const userResponse = await this.usersService.findByEmail(email);
 
-    if (!user) {
-      return 'USER_NOT_FOUND';
+    if (!userResponse.success || !userResponse.data) {
+      return null;
     }
 
+    const user = userResponse.data;
     const isPasswordValid = await bcrypt.compare(pass, user.password as string);
 
     if (!isPasswordValid) {
-      return 'INVALID_PASSWORD';
+      return null;
     }
 
     const { password, ...result } = user;

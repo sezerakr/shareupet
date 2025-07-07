@@ -1,0 +1,6 @@
+<div class="message-list-container">
+  <h3>Messages</h3>
+  <div *ngFor="let message of messages" class="message">
+    <p><strong>{{ message.author.username }}:</strong> {{ message.content }}</p>
+  </div>
+</div>

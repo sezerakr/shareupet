@@ -1,0 +1,7 @@
+<div class="comment-list-container">
+  <h4>Comments</h4>
+  <div *ngFor="let comment of comments" class="comment">
+    <p>{{ comment.content }}</p>
+    <p><em>by {{ comment.author.username }}</em></p>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="login-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Enter your email">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password" placeholder="Enter your password">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button>
+        <mat-icon svgIcon="google"></mat-icon>
+        Login with Google
+      </button>
+      <a mat-button routerLink="/auth/register">Don't have an account? Register</a>
+    </mat-card-actions>
+  </mat-card>
+</div>
+

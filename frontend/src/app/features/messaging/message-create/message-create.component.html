@@ -1,0 +1,8 @@
+<div class="message-create-container">
+  <form (ngSubmit)="sendMessage()">
+    <div class="form-group">
+      <textarea [(ngModel)]="messageContent" name="messageContent" placeholder="Type your message..." required></textarea>
+    </div>
+    <button type="submit">Send</button>
+  </form>
+</div>

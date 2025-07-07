@@ -1,0 +1,5 @@
+<div *ngIf="conversation" class="conversation-detail-container">
+  <h2>Conversation with: {{ conversation.participants | map: 'username' | join: ', ' }}</h2>
+  <app-message-list [conversationId]="conversation.id"></app-message-list>
+  <app-message-create [conversationId]="conversation.id" (messageSent)="onMessageSent($event)"></app-message-create>
+</div>

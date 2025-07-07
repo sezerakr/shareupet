@@ -1,0 +1,24 @@
+.comment-list-container {
+  margin-top: 20px;
+}
+
+.comment-list-container h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+}
+
+.comment {
+  border-top: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.comment p {
+  margin: 0;
+  color: #444;
+}
+
+.comment em {
+  font-size: 0.85em;
+  color: #777;
+}

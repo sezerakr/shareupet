@@ -1,0 +1,10 @@
+<div class="home-container">
+  <ngx-masonry>
+    <div ngxMasonryItem *ngFor="let post of posts" class="post-card">
+      <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post Image">
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.content }}</p>
+      <p class="post-author">by {{ post.author.username }}</p>
+    </div>
+  </ngx-masonry>
+</div>

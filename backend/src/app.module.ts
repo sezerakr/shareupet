@@ -9,20 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { Breed } from './breeds/entities/breed.entity';
 import { Pet } from './pets/entities/pet.entity';
-import { Post } from './posts/entities/post.entity';
-import { Comment } from './comments/entities/comment.entity';
-import { Like } from './likes/entities/like.entity';
-import { Share } from './shares/entities/share.entity';
-import { Rehoming } from './rehoming/entities/rehoming.entity';
-import { Message } from './messaging/entities/message.entity';
-import { Conversation } from './messaging/entities/conversation.entity';
-import { Post } from './posts/entities/post.entity';
-import { Comment } from './comments/entities/comment.entity';
-import { Like } from './likes/entities/like.entity';
-import { Share } from './shares/entities/share.entity';
-import { Rehoming } from './rehoming/entities/rehoming.entity';
-import { Message } from './messaging/entities/message.entity';
-import { Conversation } from './messaging/entities/conversation.entity';
 import { AppConfigModule } from './config/config.module';
 import { AppConfigService } from './config/app-config.service';
 import { APP_GUARD } from '@nestjs/core';
@@ -36,6 +22,14 @@ import { LikesModule } from './likes/likes.module';
 import { SharesModule } from './shares/shares.module';
 import { RehomingModule } from './rehoming/rehoming.module';
 import { MessagingModule } from './messaging/messaging.module';
+import { Post } from './posts/entities/post.entity';
+import { Like } from './likes/entities/like.entity';
+import { Share } from './shares/entities/share.entity';
+import { Rehoming } from './rehoming/entities/rehoming.entity';
+import { Message } from './messaging/entities/message.entity';
+import { Conversation } from './messaging/entities/conversation.entity';
+import { Comment } from './comments/entities/comment.entity';
+
 @Module({
   imports: [
     AppConfigModule,
@@ -91,4 +85,4 @@ import { MessagingModule } from './messaging/messaging.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

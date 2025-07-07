@@ -1,0 +1,9 @@
+<div class="pet-list-container">
+  <h2>Pets</h2>
+  <div *ngFor="let pet of pets" class="pet-summary">
+    <h3>{{ pet.name }}</h3>
+    <p>{{ pet.description }}</p>
+    <p><em>Type: {{ pet.type }}</em></p>
+    <p><em>Age: {{ pet.age }}</em></p>
+  </div>
+</div>

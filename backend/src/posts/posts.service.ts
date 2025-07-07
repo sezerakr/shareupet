@@ -12,7 +12,7 @@ export class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async create(
     createPostDto: CreatePostDto,
@@ -23,7 +23,7 @@ export class PostsService {
       const newPost = this.postsRepository.create({
         ...postData,
         author: { id: userId },
-        pet: petId ? { id: petId } : null,
+        pet: petId ? { id: petId } : undefined,
       });
 
       const savedPost = await this.postsRepository.save(newPost);

@@ -22,12 +22,12 @@ export class CoreEntity<T> {
   @DeleteDateColumn()
   deleted_at: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'int' })
   created_by: T;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'int' })
   updated_by: T;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'int' })
   deleted_by: T | null;
 }

@@ -1,0 +1,37 @@
+.pet-list-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pet-list-container h2 {
+  color: #2c3e50;
+  margin-bottom: 25px;
+  font-size: 2em;
+  text-align: center;
+}
+
+.pet-summary {
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.pet-summary h3 {
+  color: #3498db;
+  margin-top: 0;
+}
+
+.pet-summary p {
+  color: #555;
+}
+
+.pet-summary em {
+  color: #777;
+  font-size: 0.9em;
+}

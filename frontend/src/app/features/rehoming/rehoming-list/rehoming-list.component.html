@@ -1,0 +1,34 @@
+<div class="rehoming-list-container">
+  <h2>Rehoming Requests</h2>
+  <table mat-table [dataSource]="rehomingRequests" class="mat-elevation-z8">
+
+    <!-- Post Title Column -->
+    <ng-container matColumnDef="postTitle">
+      <th mat-header-cell *matHeaderCellDef> Post Title </th>
+      <td mat-cell *matCellDef="let request"> {{request.post.title}} </td>
+    </ng-container>
+
+    <!-- Requesting User Column -->
+    <ng-container matColumnDef="requestingUser">
+      <th mat-header-cell *matHeaderCellDef> Requesting User </th>
+      <td mat-cell *matCellDef="let request"> {{request.requestingUser.username}} </td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let request"> {{request.isApproved ? 'Approved' : 'Pending'}} </td>
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Action </th>
+      <td mat-cell *matCellDef="let request">
+        <button mat-raised-button color="primary" *ngIf="!request.isApproved" (click)="approveRequest(request.id)">Approve</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

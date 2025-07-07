@@ -12,6 +12,8 @@ import {
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { RequestUser } from 'src/common/interfaces/request-user.interface';
 import { PetsService } from './pets.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
@@ -35,7 +37,7 @@ import { Permissions } from 'src/core/decorators/permissions.decorator';
 @ApiTags('pets')
 @Controller('pets')
 export class PetsController {
-  constructor(private readonly petsService: PetsService) {}
+  constructor(private readonly petsService: PetsService) { }
 
   @ApiOperation({ summary: 'Create a new pet' })
   @ApiResponse({ status: 201, description: 'Pet successfully created' })

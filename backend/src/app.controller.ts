@@ -1,5 +1,6 @@
 import { Controller, Get, Post, UseGuards, Body, Res, Req } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { RequestUser } from './common/interfaces/request-user.interface';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { GoogleAuthGuard } from './auth/google-auth.guard';
@@ -7,12 +8,11 @@ import { AuthService } from './auth/auth.service';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiOAuth2, ApiExcludeEndpoint, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from './auth/dto/login.dto';
 import { Public } from './auth/route.public';
-import { RequestUser } from '../common/interfaces/request-user.interface';
 
 @ApiTags('auth')
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Public()
   @ApiOperation({ summary: 'User authentication with username/password' })

@@ -1,0 +1,13 @@
+<div class="post-list-container">
+  <h2>Posts</h2>
+  <div *ngFor="let post of posts" class="post-summary">
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+    <p><em>by {{ post.author.username }}</em></p>
+    <app-like-button [postId]="post.id" [initialLikesCount]="post.likes ? post.likes.length : 0" [isLikedByUser]="false"></app-like-button>
+    <app-share-button [postId]="post.id"></app-share-button>
+    <app-rehoming-request-button [postId]="post.id"></app-rehoming-request-button>
+    <app-comment-list [postId]="post.id"></app-comment-list>
+    <app-comment-create [postId]="post.id" (commentAdded)="onCommentAdded($event, post)"></app-comment-create>
+  </div>
+</div>
